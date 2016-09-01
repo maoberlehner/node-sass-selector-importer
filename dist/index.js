@@ -9,7 +9,9 @@ var fs = _interopDefault(require('fs'));
 var SelectorImporter = function SelectorImporter(options) {
   if ( options === void 0 ) options = {};
 
-  var defaultOptions = {};
+  var defaultOptions = {
+    includePaths: [process.cwd()]
+  };
   this.options = Object.assign({}, defaultOptions, options);
 };
 
@@ -25,6 +27,11 @@ SelectorImporter.prototype.cleanUrl = function cleanUrl (url) {
   return url.replace(re, '');
 };
 
+/**
+ * Parse a url for selector filters.
+ * @param {string} url - Import url from node-sass.
+ * @return {Object} Cleaned up url and selector filter object.
+ */
 SelectorImporter.prototype.parseUrl = function parseUrl (url) {
   // Find selectors in the import url and
   // return a cleaned up url and the selectors.
@@ -45,9 +52,9 @@ SelectorImporter.prototype.parseUrl = function parseUrl (url) {
 };
 
 /**
- * Synchronously resolve the path to a node-sass import url.
+ * Synchronously extract selectors from a file with the given url.
  * @param {string} url - Import url from node-sass.
- * @return {string} Fully resolved import url or null.
+ * @return {string} Contents string or null.
  */
 SelectorImporter.prototype.resolveSync = function resolveSync (url) {
   var data = this.parseUrl(url);
@@ -61,11 +68,12 @@ SelectorImporter.prototype.resolveSync = function resolveSync (url) {
     return contents;
   }
 
-  // TODO: refactor.
   selectorFilters.forEach(function (selectorFilter) {
-    selectors.push(selectorFilter[0]);
-    if (selectorFilter[1]) {
-      replacementSelectors[selectorFilter[0]] = selectorFilter[1];
+    var selector = selectorFilter[0];
+    var replacementSelector = selectorFilter[1];
+    selectors.push(selector);
+    if (replacementSelector) {
+      replacementSelectors[selector] = replacementSelector;
     }
   });
 
@@ -82,9 +90,9 @@ SelectorImporter.prototype.resolveSync = function resolveSync (url) {
 };
 
 /**
- * Asynchronously resolve the path to a node-sass import url.
+ * Asynchronously extract selectors from a file with the given url.
  * @param {string} url - Import url from node-sass.
- * @return {Promise} Promise for a fully resolved import url.
+ * @return {Promise} Promise for a contents string.
  */
 SelectorImporter.prototype.resolve = function resolve (url) {
     var this$1 = this;
@@ -103,6 +111,7 @@ function index (url, prev, done) {
   }
   selectorImporter.options.includePaths = includePaths
     .concat(this.options.includePaths.split(path.delimiter));
+
   // Merge default with custom options.
   if (this.options.selectorImporter) {
     Object.assign(selectorImporter.options, this.options.selectorImporter);
