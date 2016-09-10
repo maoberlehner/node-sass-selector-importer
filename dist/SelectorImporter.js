@@ -5,37 +5,30 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var cssSelectorExtract = _interopDefault(require('css-selector-extract'));
 var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
+var postcssScss = _interopDefault(require('postcss-scss'));
 
+/**
+ * Import only certain CSS selectors form a file.
+ */
 var SelectorImporter = function SelectorImporter(options) {
   if ( options === void 0 ) options = {};
 
   var defaultOptions = {
     includePaths: [process.cwd()]
   };
+  /** @type {Object} */
   this.options = Object.assign({}, defaultOptions, options);
-};
-
-/**
- * Clean a node sass import url.
- * @param {string} url - Import url from node-sass.
- * @return {string} Cleaned url.
- */
-SelectorImporter.prototype.cleanUrl = function cleanUrl (url) {
-  // Remove tilde symbol from the beginning
-  // of urls (except home "~/" directory).
-  var re = new RegExp(("^~(?!" + (path.sep) + ")"));
-  return url.replace(re, '');
 };
 
 /**
  * Parse a url for selector filters.
  * @param {string} url - Import url from node-sass.
- * @return {Object} Cleaned up url and selector filter object.
+ * @return {Object} Cleaned up url and selector filter array.
  */
 SelectorImporter.prototype.parseUrl = function parseUrl (url) {
   // Find selectors in the import url and
   // return a cleaned up url and the selectors.
-  var cleanUrl = this.cleanUrl(url);
+  var cleanUrl = url;
   var selectorFilters;
   var selectorFiltersMatch = url.match(/{([^}]+)}/);
   if (selectorFiltersMatch) {
@@ -54,32 +47,26 @@ SelectorImporter.prototype.parseUrl = function parseUrl (url) {
 /**
  * Extract and replace selectors from a file with the given url.
  * @param {string} cleanUrl - Cleaned up import url from node-sass.
- * @param {Object} selectorFilters - Selector filter object.
+ * @param {Array} selectorFilters - Selector filter array.
  * @return {string} Contents string or null.
  */
 SelectorImporter.prototype.extractSelectors = function extractSelectors (cleanUrl, selectorFilters) {
-  var selectors = [];
-  var replacementSelectors = {};
   var contents = null;
 
   if (!selectorFilters) {
     return contents;
   }
 
-  selectorFilters.forEach(function (selectorFilter) {
-    var selector = selectorFilter[0];
-    var replacementSelector = selectorFilter[1];
-    selectors.push(selector);
-    if (replacementSelector) {
-      replacementSelectors[selector] = replacementSelector;
-    }
-  });
+  var preparedSelectorFilters = selectorFilters.map(function (selectorFilter) { return ({
+    selector: selectorFilter[0],
+    replacement: selectorFilter[1]
+  }); });
 
   this.options.includePaths.some(function (includePath) {
     try {
       var css = fs.readFileSync(path.join(includePath, cleanUrl), { encoding: 'utf8' });
       if (css) {
-        contents = cssSelectorExtract.processSync(css, selectors, replacementSelectors);
+        contents = cssSelectorExtract.processSync(css, preparedSelectorFilters, postcssScss);
         return true;
       }
     } catch (e) {}
