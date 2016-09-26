@@ -35,11 +35,26 @@ SelectorImporter.prototype.parseUrl = function parseUrl (url) {
     cleanUrl = url.replace(/(\r\n|\n|\r)/gm, ' ').split(' from ')[1].trim();
     // Create an array with selectors and replacement as one value.
     selectorFilters = selectorFiltersMatch[1].split(',')
-      // Trim unnecessary whitespace.
-      .map(Function.prototype.call, String.prototype.trim)
       // Split selectors and replacement selectors into an array.
-      .map(function (currentValue) { return currentValue.split(' as ')
-        .map(Function.prototype.call, String.prototype.trim); });
+      .map(function (filter) {
+        var filterArray = filter.trim().split(' as ')
+          .map(Function.prototype.call, String.prototype.trim);
+
+        var selector = filterArray[0];
+        var replacement = filterArray[1];
+
+        var matchRegExpSelector = /^\/(.+)\/([a-z]*)$/.exec(selector);
+        if (matchRegExpSelector) {
+          var pattern = matchRegExpSelector[1];
+          var flags = matchRegExpSelector[2];
+          selector = new RegExp(pattern, flags);
+        }
+
+        return {
+          selector: selector,
+          replacement: replacement
+        };
+      });
   }
   return { url: cleanUrl, selectorFilters: selectorFilters };
 };
@@ -57,16 +72,11 @@ SelectorImporter.prototype.extractSelectors = function extractSelectors (cleanUr
     return contents;
   }
 
-  var preparedSelectorFilters = selectorFilters.map(function (selectorFilter) { return ({
-    selector: selectorFilter[0],
-    replacement: selectorFilter[1]
-  }); });
-
   this.options.includePaths.some(function (includePath) {
     try {
       var css = fs.readFileSync(path.join(includePath, cleanUrl), { encoding: 'utf8' });
       if (css) {
-        contents = cssSelectorExtract.processSync(css, preparedSelectorFilters, postcssScss);
+        contents = cssSelectorExtract.processSync(css, selectorFilters, postcssScss);
         return true;
       }
     } catch (e) {}

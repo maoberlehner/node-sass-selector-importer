@@ -5,7 +5,7 @@
     "node-sass",
     "sass"
   ],
-  "version": "1.0.2",
+  "version": "2.0.0",
   "author": "Markus Oberlehner",
   "homepage": "https://github.com/maoberlehner/node-sass-selector-importer",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "url": "https://github.com/maoberlehner/node-sass-selector-importer/issues"
   },
   "dependencies": {
-    "css-selector-extract": "^1.2.0",
+    "css-selector-extract": "^1.3.0",
     "postcss-scss": "^0.3.0"
   },
   "devDependencies": {

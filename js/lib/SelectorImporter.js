@@ -33,11 +33,26 @@ export default class SelectorImporter {
       cleanUrl = url.replace(/(\r\n|\n|\r)/gm, ' ').split(' from ')[1].trim();
       // Create an array with selectors and replacement as one value.
       selectorFilters = selectorFiltersMatch[1].split(',')
-        // Trim unnecessary whitespace.
-        .map(Function.prototype.call, String.prototype.trim)
         // Split selectors and replacement selectors into an array.
-        .map((currentValue) => currentValue.split(' as ')
-          .map(Function.prototype.call, String.prototype.trim));
+        .map((filter) => {
+          const filterArray = filter.trim().split(' as ')
+            .map(Function.prototype.call, String.prototype.trim);
+
+          let selector = filterArray[0];
+          const replacement = filterArray[1];
+
+          const matchRegExpSelector = /^\/(.+)\/([a-z]*)$/.exec(selector);
+          if (matchRegExpSelector) {
+            const pattern = matchRegExpSelector[1];
+            const flags = matchRegExpSelector[2];
+            selector = new RegExp(pattern, flags);
+          }
+
+          return {
+            selector,
+            replacement
+          };
+        });
     }
     return { url: cleanUrl, selectorFilters };
   }
@@ -55,16 +70,11 @@ export default class SelectorImporter {
       return contents;
     }
 
-    const preparedSelectorFilters = selectorFilters.map(selectorFilter => ({
-      selector: selectorFilter[0],
-      replacement: selectorFilter[1]
-    }));
-
     this.options.includePaths.some((includePath) => {
       try {
         const css = fs.readFileSync(path.join(includePath, cleanUrl), { encoding: 'utf8' });
         if (css) {
-          contents = cssSelectorExtract.processSync(css, preparedSelectorFilters, postcssScss);
+          contents = cssSelectorExtract.processSync(css, selectorFilters, postcssScss);
           return true;
         }
       } catch (e) {}
