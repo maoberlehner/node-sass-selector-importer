@@ -87,22 +87,23 @@ SelectorImporter.prototype.extractSelectors = function extractSelectors (cleanUr
 };
 
 /**
- * Synchronously resolve filtered contentes from a file with the given url.
+ * Synchronously resolve filtered contents from a file with the given url.
  * @param {string} url - Import url from node-sass.
- * @return {string} Contents string or null.
+ * @return {Object|null} Contents object or null.
  */
 SelectorImporter.prototype.resolveSync = function resolveSync (url) {
   var data = this.parseUrl(url);
   var cleanUrl = data.url;
   var selectorFilters = data.selectorFilters;
+  var contents = this.extractSelectors(cleanUrl, selectorFilters);
 
-  return this.extractSelectors(cleanUrl, selectorFilters);
+  return contents ? { contents: contents } : null;
 };
 
 /**
- * Asynchronously resolve filtered contentes from a file with the given url.
+ * Asynchronously resolve filtered contents from a file with the given url.
  * @param {string} url - Import url from node-sass.
- * @return {Promise} Promise for a contents string.
+ * @return {Promise} Promise for a contents object.
  */
 SelectorImporter.prototype.resolve = function resolve (url) {
     var this$1 = this;
