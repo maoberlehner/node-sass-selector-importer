@@ -28,7 +28,7 @@ export default class SelectorImporter {
     // return a cleaned up url and the selectors.
     let cleanUrl = url;
     let selectorFilters;
-    const selectorFiltersMatch = url.match(/{([^}]+)}/);
+    const selectorFiltersMatch = url.match(/{([^}]*)}/);
     if (selectorFiltersMatch) {
       cleanUrl = url.replace(/(\r\n|\n|\r)/gm, ` `).split(` from `)[1].trim();
       // Create an array with selectors and replacement as one value.
@@ -102,7 +102,7 @@ export default class SelectorImporter {
       `/`
     ];
     const regex = new RegExp(
-      `(${specialCharacters.join(`|`)}|\\${regexSpecialCharacters.join(`|\\`)})`, `g`
+      `(?!@mixin)(${specialCharacters.join(`|`)}|\\${regexSpecialCharacters.join(`|\\`)})`, `g`
     );
     return string.replace(regex, `${escapeSequence}$1`);
   }
