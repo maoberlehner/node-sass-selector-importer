@@ -1,0 +1,56 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.22.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:extend:20180424':
+    - css-selector-extract > esdoc > cheerio > jsdom > request > extend:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > extend:
+        patched: '2022-01-17T15:36:29.063Z'
+  'npm:hoek:20180212':
+    - css-selector-extract > esdoc > cheerio > jsdom > request > hawk > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > cheerio > jsdom > request > hawk > boom > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > cheerio > jsdom > request > hawk > sntp > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > hawk > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > cheerio > jsdom > request > hawk > cryptiles > boom > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > hawk > boom > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > hawk > sntp > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > hawk > cryptiles > boom > hoek:
+        patched: '2022-01-17T15:36:29.063Z'
+  SNYK-JS-LODASH-567746:
+    - css-selector-extract > esdoc > cheerio > lodash:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > lodash:
+        patched: '2022-01-17T15:36:29.063Z'
+  'npm:qs:20170213':
+    - css-selector-extract > esdoc > cheerio > jsdom > request > qs:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > qs:
+        patched: '2022-01-17T15:36:29.063Z'
+  'npm:stringstream:20180511':
+    - css-selector-extract > esdoc > cheerio > jsdom > request > stringstream:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > stringstream:
+        patched: '2022-01-17T15:36:29.063Z'
+  'npm:tough-cookie:20170905':
+    - css-selector-extract > esdoc > cheerio > jsdom > tough-cookie:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > cheerio > jsdom > request > tough-cookie:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > tough-cookie:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > tough-cookie:
+        patched: '2022-01-17T15:36:29.063Z'
+  'npm:tunnel-agent:20170305':
+    - css-selector-extract > esdoc > cheerio > jsdom > request > tunnel-agent:
+        patched: '2022-01-17T15:36:29.063Z'
+    - css-selector-extract > esdoc > ice-cap > cheerio > jsdom > request > tunnel-agent:
+        patched: '2022-01-17T15:36:29.063Z'
